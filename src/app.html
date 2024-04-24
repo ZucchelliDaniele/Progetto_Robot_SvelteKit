@@ -5,6 +5,7 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
+		<title>MecaPiFlex</title>
 	</head>
 	<body data-sveltekit-preload-data="hover" class="bg-white-gray dark:bg-black-gray transition ease-in dark:ease-out duration-1000">
 		<div style="display: contents">%sveltekit.body%</div>
@@ -22,17 +23,4 @@
     } else {
         document.documentElement.classList.remove('dark')
     }
-	function checkScreenSize() {
-		const isMobileView = window.matchMedia('(max-width: 1023px)').matches;
-
-		if (isMobileView && localStorage.getItem("screen_mode") != "mobile") {
-			localStorage.setItem("screen_mode", "mobile");
-			location.reload()
-		}
-		else if (!isMobileView && localStorage.getItem("screen_mode") != "desktop") {
-			localStorage.setItem("screen_mode", "desktop");
-			location.reload()
-		}
-	}checkScreenSize()
-	window.addEventListener('resize', checkScreenSize);
 </script>
