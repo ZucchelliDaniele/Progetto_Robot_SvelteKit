@@ -38,10 +38,16 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-node": "^5.0.1",
+		"axios": "^1.6.8",
+		"body-parser": "^1.20.2",
 		"chart.js": "^4.4.2",
 		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.5",
+		"crypto-js": "^4.2.0",
 		"express": "^4.19.2",
 		"express-session": "^1.18.0",
-		"fs": "^0.0.1-security"
+		"fs": "^0.0.1-security",
+		"polka": "^0.5.2",
+		"portscanner": "^2.2.0"
 	}
 }

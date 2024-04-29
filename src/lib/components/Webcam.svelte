@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import { writable } from "svelte/store";
     import { CameraVideoOff } from "svelte-bootstrap-icons";
+    import { getUrlWithNoPort } from "$lib/logic/main";
 
     export let className: string; // Receive class prop from parent component
 
@@ -24,7 +25,7 @@
 
         img.onerror = function() {
 			imageLoaded = false;
-			console.log(imageUrl);
+			console.error("Streaming Not found");
             // Handle error if needed
         };
     }
@@ -46,14 +47,8 @@
 
     onDestroy(() => {
         imageSrc.set(""); // Reset the image source on component destroy
+        clearInterval(videoInterval)
     });
-
-	function getUrlWithNoPort() {
-		const url = window.location.href;
-		const parsedUrl = new URL(url);
-		const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
-		return baseUrl;
-	}
 </script>
 
 <style>

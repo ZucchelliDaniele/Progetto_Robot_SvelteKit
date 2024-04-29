@@ -3,12 +3,32 @@
 	var webcamJoystickDiv: HTMLDivElement
 		import Webcam from './Webcam.svelte';
 		import Joystick from './Joystick.svelte';
+		import { onMount } from 'svelte';
 		export var X: number
 		export var Y: number
 		export var Fl: number
 		export var Fr: number
 		export var Bl: number
 		export var Br: number
+		var loaded: boolean = false
+
+		function checkScreenSize() {
+			let isMobileView = window.matchMedia('(max-width: 1023px)').matches;
+			if(webcamJoystickDiv != null) {
+				if (isMobileView) {
+					webcamJoystickDiv.className = "grid grid-rows-2 grid-cols-1 min-w-fit";
+				} else {
+					webcamJoystickDiv.className = "grid grid-cols-2 min-w-fit";
+				}
+			}
+		}
+		
+		onMount(() => {
+			window.addEventListener('resize', checkScreenSize);
+			window.addEventListener('fullscreenchange', checkScreenSize);
+			loaded = true
+			checkScreenSize();
+		});
 
 		// var class_name;
 		// var isMobileView = window.matchMedia('(max-width: 1023px)').matches;
@@ -40,10 +60,14 @@
 </script>
 
 <div bind:this = {webcamJoystickDiv} class="grid grid-cols-2 min-w-fit">
-	<div class="items-center min-w-fit min-h-fit ring-2 ml-5 rounded-xl m-2 mr-6 p-4 mt-20 flex ring-gray dark:ring-white-gray rounded-3xl">
+	{#if loaded}
+	<div class="items-center min-h-fit ring-2 ml-5 rounded-xl m-2 p-4 mt-20 flex ring-gray dark:ring-white-gray rounded-3xl">
 		<Webcam className=""/>
 	</div>
-	<div class="mt-16">
+	{/if}
+	{#if loaded}
+	<div class="mt-16 ml-4">
 		<Joystick bind:X bind:Y bind:Fr bind:Fl bind:Br bind:Bl/>
 	</div>
+	{/if}
 </div>

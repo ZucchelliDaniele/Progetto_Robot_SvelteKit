@@ -93,7 +93,7 @@
             if(labels.length > 20) {
                 labels.splice(0, 1);
             }
-            FlBr_FrBl_Chart.update();
+            if(FlBr_FrBl_Chart.width != 0) FlBr_FrBl_Chart.update();
         }, 1000 * update_time);
     }
 
@@ -156,6 +156,7 @@
                     ]
                 },
                 options: {
+                    // @ts-ignore
                     animation: ShowAnimation,
                     scales: {
                         x: {
@@ -188,6 +189,7 @@
                             position: 'top',
                             display: true,
                             labels: {
+                                // @ts-ignore
                                 color: function() {
                                     if (document.documentElement.classList.contains('dark')) {
                                         return '#ffffff';
@@ -200,6 +202,7 @@
                         title: {
                             display: true,
                             text: 'Front Left and Back Right Values and Front Right and Back Left Values',
+                            // @ts-ignore
                             color: function() {
                                     if (document.documentElement.classList.contains('dark')) {
                                         return '#ffffff';

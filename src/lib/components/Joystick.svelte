@@ -4,16 +4,15 @@
  *fork from (https://github.com/bobboteck/JoyStick)
  */
 
-import { onMount } from "svelte";
-import { writable } from 'svelte/store';
+import { onDestroy, onMount } from "svelte";
 
 var joystickComponent: HTMLDivElement
 let StickStatus =
 {
     xPosition: 0,
     yPosition: 0,
-    x: 0,
-    y: 0,
+    x: "",
+    y: "",
 };
 
 var deadZoneValue = 20
@@ -39,7 +38,7 @@ export var Bl:number
 export var Fl:number
 export var Br:number
 var differenceIntExtCircle = 2/3
-var Joy
+var Joy: any
 var TriggerSwapStatus = true //true left Trigger false Right Trigger
 var leftTriggerValue = 0
 var rightTriggerValue = 0
@@ -50,9 +49,13 @@ var internalStrokeColor: string
 var externalLineWidth: string
 var externalStrokeColor: string
 var autoReturnToCenter: string
-var canvas: HTMLCanvasElement
-var objContainer
-var context
+var canvas: any
+var objContainer: any
+var context: any
+
+var IntervalCalculate: number
+var IntervalX: number
+var IntervalY: number
 /**
  * @desc Principal object that draw a joystick, you only need to initialize the object and suggest the HTML container
  * @costructor
@@ -68,15 +71,15 @@ var context
  *  autoReturnToCenter {Bool} (optional) - Sets the behavior of the stick, whether or not, it should return to zero position when released (Default value is True and return to zero)
  * @param callback {StickStatus} - 
  */
-var JoyStick = (function(parameters, callback, classname: string)
+var JoyStick = (function(parameters: any, callback: any, classname: string)
 {
     var title:string;
-    var circumference
-    var internalRadius
-    var maxMoveStick
-    var externalRadius
-    var centerX
-    var centerY
+    var circumference: number
+    var internalRadius: number
+    var maxMoveStick: number
+    var externalRadius: number
+    var centerX: number
+    var centerY: number
     var directionHorizontalLimitPos
     var directionHorizontalLimitNeg
     var directionVerticalLimitPos
@@ -102,11 +105,11 @@ var JoyStick = (function(parameters, callback, classname: string)
                 width = joystickComponent.clientWidth -20
             }
             height = width
-            internalFillColor = (typeof parameters.internalFillColor === "undefined" ? "#125097" : parameters.internalFillColor),
+            internalFillColor = (localStorage.theme === 'dark' ? "#125097" : "#971231"),
             internalLineWidth = (typeof parameters.internalLineWidth === "undefined" ? 2 : parameters.internalLineWidth),
-            internalStrokeColor = (typeof parameters.internalStrokeColor === "undefined" ? "#7fb4f0" : parameters.internalStrokeColor),
+            internalStrokeColor = (localStorage.theme === 'dark' ? "#7fb4f0" : "#f07fa7"),
             externalLineWidth = (typeof parameters.externalLineWidth === "undefined" ? 2 : parameters.externalLineWidth),
-            externalStrokeColor = (typeof parameters.externalStrokeColor ===  "undefined" ? "#004dc9" : parameters.externalStrokeColor),
+            externalStrokeColor = (localStorage.theme === 'dark' ? "#004dc9" : "#c70032"),
             autoReturnToCenter = (typeof parameters.autoReturnToCenter === "undefined" ? true : parameters.autoReturnToCenter);
 
         callback = callback || function() {};
@@ -204,12 +207,12 @@ var JoyStick = (function(parameters, callback, classname: string)
     /**
      * @desc Events for manage touch
      */
-    function onTouchStart(event) 
+    function onTouchStart() 
     {
         pressed = 1;
     }
 
-    function onTouchMove(event)
+    function onTouchMove(event: any)
     {
         if(pressed === 1 && event.targetTouches[0].target === canvas)
         {
@@ -241,7 +244,7 @@ var JoyStick = (function(parameters, callback, classname: string)
         }
     } 
 
-    function onTouchEnd(event) 
+    function onTouchEnd() 
     {
         pressed = 0;
         // If required reset position store variable
@@ -267,13 +270,13 @@ var JoyStick = (function(parameters, callback, classname: string)
     /**
      * @desc Events for manage mouse
      */
-    function onMouseDown(event) 
+    function onMouseDown() 
     {
         pressed = 1;
     }
 
     /* To simplify this code there was a new experimental feature here: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX , but it present only in Mouse case not metod presents in Touch case :-( */
-    function onMouseMove(event) 
+    function onMouseMove(event: any) 
     {
         if(pressed === 1)
         {
@@ -305,7 +308,7 @@ var JoyStick = (function(parameters, callback, classname: string)
         }
     }
 
-    function onMouseUp(event) 
+    function onMouseUp() 
     {
         if(canvas != null) {
             pressed = 0;
@@ -337,6 +340,7 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc The width of canvas
      * @return Number of pixel width 
      */
+    // @ts-ignore
     this.GetWidth = function () 
     {
         return canvas.width;
@@ -344,14 +348,24 @@ var JoyStick = (function(parameters, callback, classname: string)
 
     // Call the reconstructJoystick function when the window resizes
     window.addEventListener('resize', ()=>{
-        if(objContainer != null) objContainer.removeChild(canvas);
-        buildJoystick()
+        if(objContainer.clientWidth != 0) {
+            if(objContainer != null) objContainer.removeChild(canvas);
+            buildJoystick()
+        }
+    });
+
+    // Call the reconstructJoystick function when the window resizes
+    window.addEventListener('fullscreenchange', ()=>{
+        if(objContainer.clientWidth != 0) {
+            if(objContainer != null) objContainer.removeChild(canvas);
+            buildJoystick()
+        }
     });
 
 
     
-
-    this.updateCircle = function (event)
+    // @ts-ignore
+    this.updateCircle = function ()
     {
         if(canvas != null) {
             // Delete canvas
@@ -373,6 +387,7 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc The height of canvas
      * @return Number of pixel height
      */
+    // @ts-ignore
     this.GetHeight = function () 
     {
         return canvas.height;
@@ -382,6 +397,7 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc The X position of the cursor relative to the canvas that contains it and to its dimensions
      * @return Number that indicate relative position
      */
+    // @ts-ignore
     this.GetPosX = function ()
     {
         return movedX;
@@ -391,6 +407,7 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc The Y position of the cursor relative to the canvas that contains it and to its dimensions
      * @return Number that indicate relative position
      */
+    // @ts-ignore
     this.GetPosY = function ()
     {
         return movedY;
@@ -400,10 +417,11 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc Normalizzed value of X move of stick
      * @return Integer from -100 to +100
      */
+    // @ts-ignore
     this.GetX = function ()
     {
-        if(((100*((movedX - centerX)/maxMoveStick)).toFixed())>100) return 100
-        else if(((100*((movedX - centerX)/maxMoveStick)).toFixed())<-100) return -100
+        if(Number((100*((movedX - centerX)/maxMoveStick)).toFixed())>100) return 100
+        else if(Number((100*((movedX - centerX)/maxMoveStick)).toFixed())<-100) return -100
         else return (100*((movedX - centerX)/maxMoveStick)).toFixed();
     };
 
@@ -411,22 +429,24 @@ var JoyStick = (function(parameters, callback, classname: string)
      * @desc Normalizzed value of Y move of stick
      * @return Integer from -100 to +100
      */
+    // @ts-ignore
     this.GetY = function ()
     {
-        if((((100*((movedY - centerY)/maxMoveStick))*-1).toFixed())>100) return 100
-        else if((((100*((movedY - centerY)/maxMoveStick))*-1).toFixed())<-100) return -100
-        else return ((100*((movedY - centerY)/maxMoveStick))*-1).toFixed();
+        if(Number(((100*((movedY - centerY)/maxMoveStick))*-1).toFixed())>100) return 100
+        else if(Number(((100*((movedY - centerY)/maxMoveStick))*-1).toFixed())<-100) return -100
+        else return (Number(100*((movedY - centerY)/maxMoveStick))*-1).toFixed();
     };
 });
 
 function createJoystick(classname: string) {
+    // @ts-ignore
     Joy = new JoyStick( "", "", classname);
     updateJoystickColor()
     // if (window.location.pathname.includes("input.html")) {
     //     setInterval(function(){ console.log(Joy.GetX()) });
     //     setInterval(function(){ console.log(Joy.GetY()) });
     // }
-    setInterval(function(){
+    IntervalCalculate = setInterval(function(){
         degrees = calcAngleDegrees(Joy.GetX(), Joy.GetY())
         radiants = calcAngleDegrees(Joy.GetX(), Joy.GetY()) / 180.0 * Math.PI
         if(TriggerSwapStatus && JoystickOrTrigger==false) {
@@ -502,10 +522,10 @@ function createJoystick(classname: string) {
             Br = -1 * magnitude
         }
         else {
-            Fr = Math.round((Math.sin((radiants - (1/4) * Math.PI).toFixed(5))) * 100000 * magnitude) / 100000
-            Bl = Math.round((Math.sin((radiants - (1/4) * Math.PI).toFixed(5))) * 100000 * magnitude) / 100000
-            Fl = Math.round((Math.sin((radiants + (1/4) * Math.PI).toFixed(5))) * 100000 * magnitude) / 100000
-            Br = Math.round((Math.sin((radiants + (1/4) * Math.PI).toFixed(5))) * 100000 * magnitude) / 100000
+            Fr = Math.round((Math.sin(Number((radiants - (1/4) * Math.PI).toFixed(5)))) * 100000 * magnitude) / 100000
+            Bl = Math.round((Math.sin(Number((radiants - (1/4) * Math.PI).toFixed(5)))) * 100000 * magnitude) / 100000
+            Fl = Math.round((Math.sin(Number((radiants + (1/4) * Math.PI).toFixed(5)))) * 100000 * magnitude) / 100000
+            Br = Math.round((Math.sin(Number((radiants + (1/4) * Math.PI).toFixed(5)))) * 100000 * magnitude) / 100000
         }
         updateJoystickColor()
     });
@@ -581,14 +601,6 @@ function updateGamepadState() {
     const leftStickY = gamepad.axes[1];
     const rightStickX = gamepad.axes[2];
     const rightStickY = gamepad.axes[3];
-
-    // Update HTML elements with analog values
-    // if (window.location.pathname.includes("input.html")) {
-    //     document.getElementById("LeftStickX").value = leftStickX;
-    //     document.getElementById("LeftStickY").value = -leftStickY;
-    //     document.getElementById("RightStickX").value = rightStickX;
-    //     document.getElementById("RightStickY").value = -rightStickY;
-    // }
 
     var valueX
     var valueY
@@ -684,12 +696,19 @@ function updateJoystickColor() {
 
 onMount(()=>{
     createJoystick("float-right hover:cursor-pointer ring-2 ring-gray dark:ring-white-gray rounded-3xl m-8")
-    setInterval(function(){
+    IntervalX = setInterval(function(){
         X = Joy.GetX()
     });
-    setInterval(function(){
+    IntervalY = setInterval(function(){
         Y = Joy.GetY()
     });
+})
+
+onDestroy(()=>{
+    canvas.innerHTML=""
+    clearInterval(IntervalCalculate)
+    clearInterval(IntervalX)
+    clearInterval(IntervalY)
 })
 </script>
 

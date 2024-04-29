@@ -9,6 +9,7 @@
     import { Wifi1 } from 'svelte-bootstrap-icons';
     import { Wifi2 } from 'svelte-bootstrap-icons';
     import { WifiOff } from 'svelte-bootstrap-icons';
+    import { getUrlWithNoPort } from '$lib/logic/main';
 
     var closed = true;
     var wifiRequestInterval: number; // Variable to hold the interval for requesting WiFi signal
@@ -41,16 +42,6 @@
 -80 dBm	Not Good	Minimum signal strength for basic connectivity. Packet delivery may be unreliable.	N/A
 -90 dBm	Unusable	Approaching or drowning in the noise floor. Any functionality is highly unlikely.	N/A
 */
-
-
-function getUrlWithNoPort() {
-  const url = window.location.href;
-
-  const parsedUrl = new URL(url);
-//   const baseUrl = `${parsedUrl.hostname}`;
-const baseUrl = "raspberrypi.local"
-  return baseUrl;
-}
 
 function sendWifiSignal(ws: WebSocket) {
   const wifiRequestData = {
@@ -97,7 +88,8 @@ function server() {
     retry = setInterval(() => {
         if (closed && !retrying && !connected) {
             wifiSignalLevel = -1;
-            const ws = new WebSocket('ws://' + getUrlWithNoPort() + ':2604');
+            const ws = new WebSocket('ws://raspberrypi.local:2604');
+            //const ws = new WebSocket('ws://' + getUrlWithNoPort() + ':2604');
             retrying = true;
 
             ws.addEventListener('open', (event) => {
@@ -135,7 +127,7 @@ function server() {
             ws.addEventListener('error', (event) => {
                 //console.error('WebSocket encountered an error:', event);
                 ws.close();
-                console.clear()
+                //console.clear()
                 wifiSignalLevel = -1;
                 clearInterval(wifiRequestInterval); // Clear WiFi signal request interval on error
                 closed = true;

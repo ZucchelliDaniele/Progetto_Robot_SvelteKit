@@ -16,10 +16,12 @@
     
     function checkScreenSize() {
         let isMobileView = window.matchMedia('(max-width: 1023px)').matches;
-        if (isMobileView) {
-            screen.className = "py-2 px-3";
-        } else {
-            screen.className = "py-2 px-3 grid gap-2 grid-cols-2";
+        if(screen != undefined) {
+            if (isMobileView) {
+                screen.className = "py-2 px-3";
+            } else {
+                screen.className = "py-2 px-3 grid gap-2 grid-cols-2";
+            }
         }
     }
     

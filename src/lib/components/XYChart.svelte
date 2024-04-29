@@ -80,7 +80,7 @@
             if(labels.length > 20) {
                 labels.splice(0, 1);
             }
-            xyChart.update();
+            if(xyChart.width !=0) xyChart.update();
         }, 1000 * update_time);
     }
 
@@ -112,6 +112,7 @@
                     ]
                 },
                 options: {
+                    // @ts-ignore
                     animation: ShowAnimation,
                     scales: {
                         x: {
@@ -144,6 +145,7 @@
                             position: 'top',
                             display: true,
                             labels: {
+                                // @ts-ignore
                                 color: function() {
                                     if (document.documentElement.classList.contains('dark')) {
                                         return ('#fff').toString();
@@ -156,6 +158,7 @@
                         title: {
                             display: true,
                             text: 'JoyStick XY Coordinates',
+                            // @ts-ignore
                             color: function() {
                                     if (document.documentElement.classList.contains('dark')) {
                                         return '#ffffff';

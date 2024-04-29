@@ -3,12 +3,16 @@
     import { sleep } from "../logic/main.js"
     import { createEventDispatcher } from 'svelte';
     import { BadgeHd } from "svelte-bootstrap-icons";
+    import { Exit } from "../logic/main.js";
+    import { getUrlWithNoPort } from "../logic/main.js";
+    import { onMount } from "svelte";
   
     const dispatch = createEventDispatcher();
 
     let MobileMenuDropdown: HTMLDivElement;
     let stateDropDown= true;
     let MobileMenuArrow: SVGSVGElement;
+    let isLocaHost = false
 
     function DropDownMenu() {
         if(stateDropDown) {
@@ -48,6 +52,10 @@
         });
         stateDropDown = true
     }
+
+    onMount(()=>{
+        if(getUrlWithNoPort() == "http://localhost") isLocaHost = true
+    })
 </script>
 
 <!-- Background backdrop, show/hide based on slide-over state. -->
@@ -80,21 +88,23 @@
                     <div class="mt-2 space-y-2 transition ease-out duration-200 opacity-0 translate-y-1 hidden" bind:this={MobileMenuDropdown}>
                         <a on:click={CloseMobileMenu} href="./" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Analytics</a>
                         <a on:click={CloseMobileMenu} href="./camera" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50 inline-flex">Camera</a><BadgeHd class="inline-flex dark:text-white"/>
-                        <a on:click={CloseMobileMenu} href="./security" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Security</a>
-                        <a on:click={CloseMobileMenu} href="./integrations" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Integrations</a>
-                        <a on:click={CloseMobileMenu} href="./automations" class="block inline-flex rounded-lg py-2 pl-6 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Automations +</a>
-                        <a on:click={CloseMobileMenu} href="./automations" class="block inline-flex rounded-lg py-2 pr-3 text-sm mt-1 leading-7 dark:text-white hover:bg-gray-50">GPT-4 Turbo</a>
-                        <a on:click={CloseMobileMenu} href="#" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Watch demo</a>
-                        <a on:click={CloseMobileMenu} href="mailto:zucchelli.daniele.studente@itispaleocapa.it?subject=Contact%20Us%20(Your%20title%20problem%20here)&body=Tell%20us%20more%20about%20your%20problem%20here:" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Contact Us</a>
+                        <a on:click={CloseMobileMenu} href="./find" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Find Robots</a>
+                        {#if isLocaHost}
+                            <a on:click={CloseMobileMenu} href="./code" class="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 dark:text-white hover:bg-gray-50">Code</a>
+                        {/if}
                     </div>
                 </div>
+                <a on:click={CloseMobileMenu} href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Watch demo</a>
+                <a on:click={CloseMobileMenu} href="mailto:zucchelli.daniele.studente@itispaleocapa.it?subject=Contact%20Us%20(Your%20title%20problem%20here)&body=Tell%20us%20more%20about%20your%20problem%20here:" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Contact Us</a>
                 <a on:click={CloseMobileMenu} href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Features</a>
                 <a on:click={CloseMobileMenu} href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Tutorials</a>
                 <a on:click={CloseMobileMenu} href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Company</a>
             </div>
+            {#if !isLocaHost}
             <div class="py-6 dark:text-white">
-                <a on:click={CloseMobileMenu} href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 dark:text-white hover:bg-gray-50">Exit</a>
+                <button on:click={Exit} class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-red hover:bg-gray-50">Exit</button>
             </div>
+            {/if}
         </div>
     </div>
 </div>

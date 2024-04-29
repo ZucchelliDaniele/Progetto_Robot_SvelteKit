@@ -1,13 +1,20 @@
 <script lang="ts">
     "use strict"
-
+    import { FolderPlus, XSquare } from 'svelte-bootstrap-icons';
     import { onMount } from 'svelte';
     import { sleep } from "../logic/main.js";
     import { BadgeHd } from 'svelte-bootstrap-icons';
+    import { Exit } from '../logic/main.js';
+    import { _123 } from 'svelte-bootstrap-icons';
+    import { getUrlWithNoPort } from '../logic/main.js';
+
+    const NumberBootstrap = _123
+    var isLocaHost = false
 
     onMount(() => {
         // Add an event listener to the window for the click event
         window.addEventListener('click', handleClickOutside);
+        if(getUrlWithNoPort() == "http://localhost") isLocaHost = true
 
         // Cleanup function to remove the event listener when the component is unmounted
         return () => {
@@ -116,49 +123,45 @@
       <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
       <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 dark:text-white group-hover:bg-white group-hover:text-black">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
-        </svg>
-      </div>
-      <div class="flex-auto">
-        <a href="./security" on:click={DropDownMenu} class="block font-semibold dark:text-white">
-        Security
-        <span class="absolute inset-0"></span>
-        </a>
-        <p class="mt-1 dark:text-white">See and change your account datas</p>
-      </div>
-      </div>
-      <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
-      <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 dark:text-white group-hover:bg-white group-hover:text-black">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
         </svg>
       </div>
       <div class="flex-auto">
-        <a href="./integrations" on:click={DropDownMenu} class="block font-semibold dark:text-white">
-        Integrations
+        <a href="./find" on:click={DropDownMenu} class="block font-semibold dark:text-white">
+        Find Robots
         <span class="absolute inset-0"></span>
         </a>
-        <p class="mt-1 dark:text-white">Connect or remove robots</p>
+        <p class="mt-1 dark:text-white">Find robots in your network</p>
       </div>
       </div>
+      {#if isLocaHost}
       <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
-      <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 dark:text-white group-hover:bg-white group-hover:text-black">
-        <svg class="h-6 w-6 group-hover:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-        </svg>
-      </div>
-      <div class="flex-auto">
-        <a href="./automations" on:click={DropDownMenu} class="block font-semibold dark:text-white inline-flex">
-        Automations
-        <span class="absolute inset-0"></span>
-        </a>
-        <a href="./automations" on:click={DropDownMenu} class="block dark:text-white inline-flex mt-1">
-        + GPT-4 Turbo
-        <span class="absolute inset-0"></span>
-        </a>
-        <p class="mt-1 dark:text-white">Make your robot do preinstalled moves</p>
-      </div>
-      </div>
+        <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 dark:text-white group-hover:bg-white group-hover:text-black">
+          <NumberBootstrap class="h-6 w-6"/>
+        </div>
+        <div class="flex-auto">
+          <a href="./code" on:click={DropDownMenu} class="block font-semibold dark:text-white">
+          Code
+          <span class="absolute inset-0"></span>
+          </a>
+          <p class="mt-1 dark:text-white">Connect or remove devices from the robot</p>
+        </div>
+        </div>
+      {/if}
+      {#if !isLocaHost}
+      <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50">
+        <div class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 dark:text-white group-hover:bg-white group-hover:text-black">
+          <XSquare class="h-6 w-6 text-red"/>
+        </div>
+        <div class="flex-auto">
+          <button on:click={Exit} class="block font-semibold dark:text-white">
+          Quit
+          <span class="absolute inset-0"></span>
+          </button>
+          <p class="mt-1 dark:text-white">Disconnect this device</p>
+        </div>
+        </div>
+      {/if}
     </div>
     <div class="grid grid-cols-2 divide-x dark:text-white group-hover:bg-white group-hover:text-black">
       <a href="#" on:click={DropDownMenu} class="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 hover:bg-gray-100 dark:text-white">

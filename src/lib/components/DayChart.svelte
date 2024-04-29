@@ -56,6 +56,7 @@
                     ]
                 },
                 options: {
+                    // @ts-ignore
                     animation: ShowAnimation,
                     responsive: true,
                     plugins: {
@@ -63,6 +64,7 @@
                             position: 'top',
                             display: true,
                             labels: {
+                                // @ts-ignore
                                 color: function() {
                                     if (currentTheme == "dark") {
                                         return '#ffffff';
@@ -75,6 +77,7 @@
                         title: {
                             display: true,
                             text: 'Hours per day',
+                            // @ts-ignore
                             color: function() {
                                 if (currentTheme == "dark") {
                                     return '#ffffff';
