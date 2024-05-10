@@ -1,7 +1,7 @@
 <script>
     import axios from 'axios'; // Import axios for making HTTP requests
     import { onMount } from 'svelte';
-    import { getUrlWithNoPort } from '$lib/logic/main';
+    import { getUrlWithNoPort, deleteCookie } from '$lib/logic/main';
     var logged = false;
     async function checkLoginStatus() {
         try {
@@ -21,10 +21,16 @@
     onMount(async ()=> {
         
         await checkLoginStatus()
+        const hashCookieExists = document.cookie.split(';').some(cookie => cookie.trim().startsWith('hash='));
         if (logged) {
             var baseUrl = window.location.origin; // Get the base URL
             var redirectUrl = baseUrl + '/'; // Construct the redirect URL
             window.location.href = redirectUrl; // Redirect to the constructed URL
+        }else {
+            if(hashCookieExists) {
+                console.log("ciao")
+                deleteCookie("hash")
+            }
         }
     })
 

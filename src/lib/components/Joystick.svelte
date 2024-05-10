@@ -20,6 +20,7 @@ var deadZoneValue = 20
 var change_theme_color_button_value = 0
 var movedX:number
 var movedY:number
+export var permission:boolean
 export var X:number
 export var Y:number
 var height: number
@@ -278,7 +279,7 @@ var JoyStick = (function(parameters: any, callback: any, classname: string)
     /* To simplify this code there was a new experimental feature here: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/offsetX , but it present only in Mouse case not metod presents in Touch case :-( */
     function onMouseMove(event: any) 
     {
-        if(pressed === 1)
+        if(pressed === 1 && canvas != null)
         {
             movedX = event.pageX;
             movedY = event.pageY;
@@ -536,7 +537,7 @@ function updateGamepadState() {
   // Get the first connected gamepad (you can loop through gamepads if multiple are connected)
   const gamepad = navigator.getGamepads()[0];
 
-  if (gamepad) {
+  if (gamepad && permission) {
 
     // Compare button values and update HTML elements
     for (let i = 0; i < gamepad.buttons.length; i++) {

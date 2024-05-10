@@ -99,23 +99,6 @@
 
     let Canvas: HTMLCanvasElement;
 
-    onMount(() => {
-        createChart()
-        if (localStorage.theme) {
-            currentTheme = localStorage.theme
-        }
-        updateColor()
-        UpdatingChart()
-        window.addEventListener('resize', ()=>{
-            FlBr_FrBl_Chart.destroy()
-            createChart()
-        });
-        window.addEventListener('fullscreenchange', ()=>{
-            FlBr_FrBl_Chart.destroy()
-            createChart()
-        });
-    });
-
     function createChart() {
         var ShowAnimation:boolean  = true 
         if (window.location.href.includes("localhost") || window.location.href.includes("127.0.0.1")) ShowAnimation = false 
@@ -218,6 +201,23 @@
             FlBr_FrBl_Chart = new Chart(Canvas, config);
         }
     }
+
+    onMount(() => {
+        createChart()
+        if (localStorage.theme) {
+            currentTheme = localStorage.theme
+        }
+        updateColor()
+        UpdatingChart()
+        window.addEventListener('resize', ()=>{
+            FlBr_FrBl_Chart.destroy()
+            createChart()
+        });
+        window.addEventListener('fullscreenchange', ()=>{
+            FlBr_FrBl_Chart.destroy()
+            createChart()
+        });
+    });
 
 </script>
 

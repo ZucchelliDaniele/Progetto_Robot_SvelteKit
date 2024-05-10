@@ -11,7 +11,7 @@ export function deleteCookie(name) {
 export async function Exit() {
     try {
         // Make a GET request to check the user's login status
-        const response = await axios.get('http://localhost:3000/logout', {
+        const response = await axios.get(getUrlWithNoPort()+':3000/logout', {
             withCredentials: true
         });
         deleteCookie("hash")
@@ -22,10 +22,27 @@ export async function Exit() {
         console.error('Login Status Error:', error);
     }
 }
+// @ts-ignore
+export function getCookie(name) {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + '=')) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+        }
+    }
+    return null;
+}
 
 export function getUrlWithNoPort() {
     const url = window.location.href;
     const parsedUrl = new URL(url);
     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
     return baseUrl;
+}
+
+export function getIpWithoutProtocol() {
+    const url = window.location.href;
+    const parsedUrl = new URL(url);
+    return parsedUrl.hostname;
 }

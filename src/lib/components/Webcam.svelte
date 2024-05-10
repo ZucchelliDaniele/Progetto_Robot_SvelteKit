@@ -3,13 +3,15 @@
     import { writable } from "svelte/store";
     import { CameraVideoOff } from "svelte-bootstrap-icons";
     import { getUrlWithNoPort } from "$lib/logic/main";
+    import { getCookie } from "$lib/logic/main";
+    import { goto } from "$app/navigation";
 
     export let className: string; // Receive class prop from parent component
 
     let imageSrc = writable("");
 	let image: HTMLImageElement;
-	const imageUrl = "http://raspberrypi.local:1809/stream.mjpg";
-    //const imageUrl = getUrlWithNoPort()+":1809/stream.mjpg";
+	//const imageUrl = "http://raspberrypi.local:1809/"+getCookie("hash");
+    const imageUrl = getUrlWithNoPort()+":1809/"+getCookie("hash");
 	let imageLoaded = false;
 	let videoInterval: number;
     var img;
@@ -31,8 +33,8 @@
     }
 
 	function RedirectToImage() {
-		if (imageLoaded && window.location.pathname !== "/camera") {
-            window.location.href = "/camera";
+		if (imageLoaded) {
+            goto("/camera");
         }
         else {
             ReloadVideo();

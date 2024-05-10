@@ -19,6 +19,8 @@ export default {
       'white-sky': '#ecfeff',
       'gray': '#a59e92',
       'white-gray' : '#dfdcd8',
+      'mid-gray': '#cdc8c1',
+      'mid-black-gray': '#363636',
       'black-gray' : '#1c1c1c',
       'red': '#f14665',
       'white-blue': '#2eacef',

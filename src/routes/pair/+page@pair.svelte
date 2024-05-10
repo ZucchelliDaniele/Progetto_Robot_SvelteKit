@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import sha256 from 'crypto-js/sha256'; // Import SHA256 hashing function
     import axios from 'axios'; // Import axios for making HTTP requests
-	import { getUrlWithNoPort } from "$lib/logic/main";
+	import { deleteCookie, getUrlWithNoPort } from "$lib/logic/main";
 
     let inputValue: string = ""; // Input value for the code to pair
     let loggedIn: boolean = false; // Flag to indicate user's login status
@@ -20,7 +20,7 @@
             const hashValue = response.data.hash;
 
             // Create a cookie string with the name and value
-            const cookieString = `hash=${hashValue}`;
+            const cookieString = `hash=${hashValue}; Expires=Fri, 31 Dec 9999 23:59:59 GMT`;
             document.cookie = cookieString;
             // If the request is successful, update login status and clear the input
             inputValue = "";
@@ -64,6 +64,7 @@
 
     // Call checkLoginStatus when the component mounts
     onMount(()=> {
+        checkScreenSize()
         window.addEventListener('resize', checkScreenSize);
         window.addEventListener('fullscreenchange', checkScreenSize);
     });
@@ -76,7 +77,7 @@
     }
 </script>
 
-<div class="mx-auto h-screen flex flex-col items-center justify-center">
+<div class="mx-auto h-screen flex flex-col items-center justify-center p-4">
     <div class="inline-flex mb-4" bind:this={textChange}>
         <span class="text-6xl text-black dark:text-white">Insert the code to pair:</span>
         <div class="flex items-center justify-center my-3 mt-4 w-3/12 mx-auto relative">

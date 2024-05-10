@@ -8,6 +8,17 @@
     let countdownInterval:number ; // Variable to hold the countdown interval
     let page: HTMLDivElement
     let isLocalHost = false
+    let MyIp:number
+
+    async function ip() {
+        try {
+            const response = await axios.get(getUrlWithNoPort()+':3000/getip');
+            MyIp = response.data[0];
+            console.log('Ip fetched:', MyIp);
+        } catch (error) {
+            console.error('Error fetching code:', error);
+        }
+    }
 
     async function fetchCode() {
         try {
@@ -52,6 +63,7 @@
     // Fetch code and start countdown on component mount
     onMount(() => {
         if(getUrlWithNoPort() == "http://localhost") {
+            ip()
             isLocalHost = true
             UpdateCode()
         }
@@ -77,5 +89,11 @@
             <span class="text-black dark:text-white">Refreshing code...</span>
         {/if}
     </div>
+    <div class="text-2xl mt-4">
+        {#if MyIp}
+            <span class="text-black dark:text-white">Go to: {MyIp}:5173</span>
+        {/if}
+    </div>
     {/if}
 </div>
+
